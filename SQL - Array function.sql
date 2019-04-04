@@ -27,3 +27,8 @@ CREATE OR REPLACE FUNCTION array_percentile_disc(double precision, double precis
 RETURNS double precision AS $$
 SELECT percentile_disc($1) within group (order by v) FROM unnest($2) g(v) where v is not null 
 $$ LANGUAGE sql;
+
+CREATE OR REPLACE FUNCTION array_uniq(anyarray)
+RETURNS anyarray AS $$
+SELECT ARRAY(SELECT DISTINCT $1[i] FROM generate_series(array_lower($1,1), array_upper($1,1)) as i );
+$$ LANGUAGE sql;
